@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Staff Dashboard - Loan CRM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+    .dashboard-btn {
+        background-color: #0d6efd;
+        color: white;
+        border: 1px solid #0d6efd;
+        transition: background-color 0.2s ease;
+    }
+
+    .dashboard-btn:hover,
+    .dashboard-btn:focus,
+    .dashboard-btn:active {
+        background-color: #0b5ed7;
+        color: white;
+        border-color: #0a58ca;
+    }
+
+    .dashboard-btn:focus {
+        box-shadow: none;
+    }
+</style>
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark px-3">
+    <span class="navbar-brand">Loan CRM | Staff</span>
+
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-light btn-sm">Logout</button>
+    </form>
+</nav>
+
+<div class="container-fluid p-4">
+
+    <h3>Staff Dashboard</h3>
+    <p class="text-muted">Welcome, {{ request.user.username }}</p>
+    <a href="{% url 'lead_list' %}"
+   class="btn btn-primary mb-3">
+    View My Assigned Leads
+</a>
+<div class="d-flex flex-wrap gap-2 mb-4">
+
+    <a href="{% url 'call_centre' %}"
+       class="btn btn-primary">
+        My Assigned Calls
+    </a>
+
+    <a href="{% url 'call_performance' %}"
+       class="btn dashboard-btn">
+        My Performance
+    </a>
+
+    <a href="{% url 'followup_list' %}"
+       class="btn dashboard-btn">
+        My Follow-ups
+    </a>
+    <a href="{% url 'application_list' %}" class="btn dashboard-btn">
+    Loan Applications
+</a>
+
+<a href="{% url 'application_add' %}" class="btn dashboard-btn">
+    Create Loan Application
+</a>
+</div>
+    <div class="row g-3">
+
+        <div class="col-md-4 col-6">
+            <div class="card shadow-sm p-3">
+                <h6>Assigned Leads</h6>
+                <h3>{{ total_leads }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-6">
+            <div class="card shadow-sm p-3">
+                <h6>Completed Call Records</h6>
+                <h3>{{ total_calls }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-6">
+            <div class="card shadow-sm p-3">
+                <h6>Interested Customers</h6>
+                <h3>{{ interested_leads }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm p-3 mt-4">
+
+        <h5>My Assigned Leads</h5>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for lead in recent_leads %}
+                    <tr>
+                        <td>{{ lead.name }}</td>
+                        <td>{{ lead.phone }}</td>
+                        <td>{{ lead.get_status_display }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No assigned leads yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
