@@ -87,4 +87,9 @@ path(
     views.reports_analytics,
     name='reports_analytics'
 ),
+path(
+    'mobile-admin/',
+    views.mobile_admin_dashboard,
+    name='mobile_admin_dashboard'
+),
 ]

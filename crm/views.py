@@ -1103,3 +1103,38 @@ def reports_analytics(request):
         'crm/reports_analytics.html',
         context
     )
+
+@login_required
+def mobile_admin_dashboard(request):
+
+    if not is_admin(request.user):
+        messages.error(request, "You are not authorized to access the Mobile Admin Dashboard.")
+        return redirect('dashboard')
+
+    context = {
+        'total_leads': CustomerLead.objects.count(),
+
+        'total_staff': User.objects.filter(
+            role='staff',
+            is_active=True,
+            is_superuser=False
+        ).count(),
+
+        'total_calls': CallRecord.objects.count(),
+
+        'total_applications': LoanApplication.objects.count(),
+
+        'interested_leads': CustomerLead.objects.filter(
+            status='interested'
+        ).count(),
+
+        'recent_leads': CustomerLead.objects.order_by(
+            '-created_at'
+        )[:5],
+    }
+
+    return render(
+        request,
+        'crm/mobile_admin_dashboard.html',
+        context
+    )

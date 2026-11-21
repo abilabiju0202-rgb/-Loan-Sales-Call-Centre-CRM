@@ -1,53 +1,174 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Daily Call Performance</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Daily Call Performance | Loan CRM</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fb;
+        }
+
+        .performance-container {
+            max-width: 850px;
+            padding: 30px 20px;
+        }
+
+        .performance-card {
+            border: none;
+            border-radius: 14px;
+        }
+
+        .performance-number {
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px 10px;
+            height: 100%;
+        }
+
+        .progress {
+            border-radius: 20px;
+        }
+
+        @media (max-width: 576px) {
+            .performance-container {
+                padding: 20px 12px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .performance-card {
+                padding: 18px !important;
+            }
+
+            .performance-number {
+                font-size: 25px;
+            }
+
+            .back-button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container py-5">
+<nav class="navbar navbar-dark bg-primary px-3">
+    <a href="{% url 'dashboard' %}" class="navbar-brand fw-semibold">
+        Loan CRM
+    </a>
 
-    <h3>My Daily Performance</h3>
-    <p class="text-muted">{{ target.target_date }}</p>
+    <a href="{% url 'call_centre' %}" class="btn btn-light btn-sm">
+        Call Centre
+    </a>
+</nav>
 
-    <div class="card shadow-sm p-4">
+<div class="container performance-container">
 
-        <h5>Daily Call Target</h5>
+    <!-- Page Heading -->
+    <div class="mb-4">
 
-        <h2>{{ completed_calls }} / {{ target.call_target }}</h2>
+        <h3 class="page-title fw-semibold">
+            My Daily Performance
+        </h3>
 
-        <div class="progress my-3" style="height:20px;">
-            <div class="progress-bar bg-success"
-                 role="progressbar"
-                 style="width:{{ percentage }}%">
-                {{ percentage }}%
-            </div>
+        <p class="text-muted mb-0">
+            Performance Date: {{ target.target_date }}
+        </p>
+
+    </div>
+
+    <!-- Performance Card -->
+    <div class="card shadow-sm performance-card p-4">
+
+        <h5 class="fw-semibold mb-3">
+            Daily Call Target
+        </h5>
+
+        <div class="performance-number">
+            {{ completed_calls }} / {{ target.call_target }}
         </div>
 
-        <div class="row text-center mt-3">
+        <p class="text-muted mb-2">
+            Calls completed against daily target
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="progress my-3" style="height: 22px;">
+
+            <div class="progress-bar bg-success"
+                 role="progressbar"
+                 style="width:{{ percentage }}%;"
+                 aria-valuenow="{{ percentage }}"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+
+                {{ percentage }}%
+
+            </div>
+
+        </div>
+
+        <!-- Performance Statistics -->
+        <div class="row g-3 text-center mt-2">
 
             <div class="col-6">
-                <h4 class="text-success">{{ completed_calls }}</h4>
-                <p>Completed Calls</p>
+
+                <div class="stat-card">
+
+                    <h4 class="text-success fw-bold">
+                        {{ completed_calls }}
+                    </h4>
+
+                    <p class="mb-0 text-muted">
+                        Completed Calls
+                    </p>
+
+                </div>
+
             </div>
 
             <div class="col-6">
-                <h4 class="text-danger">{{ remaining_calls }}</h4>
-                <p>Remaining Calls</p>
+
+                <div class="stat-card">
+
+                    <h4 class="text-danger fw-bold">
+                        {{ remaining_calls }}
+                    </h4>
+
+                    <p class="mb-0 text-muted">
+                        Remaining Calls
+                    </p>
+
+                </div>
+
             </div>
 
         </div>
 
     </div>
 
+    <!-- Back Button -->
     <a href="{% url 'call_centre' %}"
-       class="btn btn-primary mt-3">Back to Call Centre</a>
+       class="btn btn-primary mt-4 back-button">
+
+        Back to Call Centre
+
+    </a>
 
 </div>
 
