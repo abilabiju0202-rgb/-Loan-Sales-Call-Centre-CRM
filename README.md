@@ -170,7 +170,7 @@ Installation and Setup
 
 1. Clone the Repository
 
-git clone https://github.com/yourusername/loan-crm.git
+git clone https://github.com/abilabiju0202-rgb/-Loan-Sales-Call-Centre-CRM.git
 
 2. Navigate to the Project Directory
 
