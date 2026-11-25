@@ -79,14 +79,65 @@ def dashboard(request):
 
     if is_admin(request.user):
 
+        today = timezone.localdate()
+
+        staff_members = User.objects.filter(
+            role='staff',
+            is_active=True,
+            is_superuser=False
+        )
+
+        team_performance = []
+
+        for employee in staff_members:
+            target = DailyTarget.objects.filter(
+                employee=employee,
+                target_date=today
+            ).first()
+
+            call_target = target.call_target if target else 100
+
+            completed_calls = CallRecord.objects.filter(
+                employee=employee,
+                call_date__date=today
+            ).count()
+
+            percentage = min(
+                round((completed_calls / call_target) * 100)
+                if call_target else 0,
+                100
+            )
+
+            team_performance.append({
+                'employee': employee,
+                'call_target': call_target,
+                'completed_calls': completed_calls,
+                'remaining_calls': max(
+                    call_target - completed_calls, 0
+                ),
+                'percentage': percentage,
+            })
+            print("Admin dashboard - Today:", today)
+
+            print("Active staff:", list(
+                staff_members.values_list('username', flat=True)
+            ))
+
+            print("Team calls today:", CallRecord.objects.filter(
+                employee__role='staff',
+                employee__is_active=True,
+                call_date__date=today
+            ).count())
+
         context = {
             'total_leads': CustomerLead.objects.count(),
-            'total_staff': User.objects.filter(
-    role='staff',
-    is_active=True,
-    is_superuser=False
-).count(),
+            'total_staff': staff_members.count(),
             'total_calls': CallRecord.objects.count(),
+            'today_team_calls': CallRecord.objects.filter(
+                employee__role='staff',
+                employee__is_active=True,
+                call_date__date=today
+            ).count(),
             'total_applications': LoanApplication.objects.count(),
             'interested_leads': CustomerLead.objects.filter(
                 status='interested'
@@ -94,6 +145,7 @@ def dashboard(request):
             'recent_leads': CustomerLead.objects.order_by(
                 '-created_at'
             )[:5],
+            'team_performance': team_performance,
         }
 
         return render(
@@ -429,6 +481,12 @@ def call_performance(request):
         if target.call_target else 0,
         100
     )
+    print("Logged-in employee:", request.user.username)
+    print("Today's date:", today)
+    print("Today's saved calls:", completed_calls)
+    print("All calls by employee:", CallRecord.objects.filter(
+        employee=request.user
+    ).count())
 
     context = {
         'target': target,
